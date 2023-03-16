@@ -2,12 +2,12 @@
 
 This is a small task that let users enter thier tasks which can be text or pictures, and also comment and rely to thoser tasks. We also have managers who can also comment into the tasks. 
 
-Main goals:
-1- Apply roles (user, manager)
-2- Save pictures as files into database
-3- Authentcation
+Main goals:<br>
+1- Apply roles (user, manager) <br>
+2- Save pictures as files into database <br>
+3- Authentcation <br>
 
-
+<br><br><br>
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
