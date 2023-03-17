@@ -35,4 +35,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
 });
 
-Route::middleware(['auth:manager'])->post('manager/{taskId}/addComment', [\App\Http\Controllers\Api\ManagerController::class, 'addComment']);
+Route::middleware(['auth:manager'])->group(function () {
+    Route::post('manager/{taskId}/addComment', [\App\Http\Controllers\Api\ManagerController::class, 'addManagerComment']);
+
+});

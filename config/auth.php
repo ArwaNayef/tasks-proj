@@ -41,7 +41,7 @@ return [
             'provider' => 'users',
         ],
         'manager' => [
-            'driver' => 'session',
+            'driver' => 'jwt',
             'provider' => 'managers',
         ],
     ],
@@ -67,6 +67,10 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
+        ],
+        'managers' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Manager::class,
         ],
 
         // 'users' => [

@@ -19,7 +19,10 @@ class Comment extends Model
     {
         return $this->belongsTo(User::class);
     }
-
+    public function manager()
+    {
+        return $this->belongsTo(Manager::class);
+    }
     public function task()
     {
         return $this->belongsTo(Task::class);
@@ -30,8 +33,12 @@ class Comment extends Model
         return $this->belongsTo(Comment::class, 'parent_id');
     }
 
-    public function children()
+    public function replies()
     {
         return $this->hasMany(Comment::class, 'parent_id');
+    }
+    public function images()
+    {
+        return $this->morphOne(Image::class, 'imageSource');
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Image;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -36,17 +37,21 @@ class TaskController extends Controller
             'is_completed' => $validatedData['is_completed'],
             'user_id' => $user->id,
         ]);
-
-        // Handle the photo upload, if provided
-        if ($request->hasFile('photo')) {
-            $photo = $request->file('photo');
-            $filename = time() . '_' . $photo->getClientOriginalName();
-            $photo->storeAs('public/tasks', $filename);
-            $task->photo = $filename;
-        }
-
         // Save the task
         $task->save();
+
+        $path="";
+        if($request->hasfile('photo')) {
+            $image = $request->file('photo');
+            $imgname = time() + rand(1, 10000000) . '.' . $image->getClientOriginalExtension();
+            $path = "uploads/images/$imgname";
+            Storage::disk('public')->put($path, file_get_contents($image));
+        }
+        if($path!=""){
+            $picture = new Image();
+            $picture->image=$path;
+            $task->images()->save($picture);
+        }
 
         // Return a response with the created task
         return response()->json([
@@ -55,33 +60,9 @@ class TaskController extends Controller
         ], 201);
     }
 
-    public function showTasks(Request $request)
-    {
-        // Get the authenticated user
-        $user = auth()->user();
-
-        // Retrieve all tasks associated with the user
-        $tasks = Task::where('user_id', $user->id)->get();
-
-        // Return a response with the tasks
-        return response()->json([
-            'tasks' => $tasks
-        ], 200);
-    }
     public function showTask(Request $request, $id)
     {
-        // Get the authenticated user
-        $user = auth()->user();
-
-        // Retrieve the task with the specified ID that belongs to the user
-        $task = Task::where('user_id', $user->id)->where('id', $id)->first();
-
-        // Check if the task exists
-        if (!$task) {
-            return response()->json([
-                'message' => 'Task not found'
-            ], 404);
-        }
+        $task = Task::with('commentsWithReplies')->find($id);
 
         // Return a response with the task details
         return response()->json([

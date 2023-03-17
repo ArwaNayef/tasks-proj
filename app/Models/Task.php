@@ -13,7 +13,6 @@ class Task extends Model
         'description',
         'schedule_date',
         'is_completed',
-        'photo',
         'user_id',
     ];
 
@@ -22,8 +21,22 @@ class Task extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function comments()
+   /* public function comments()
     {
         return $this->hasMany(Comment::class);
+    }*/
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class)->where('parent_id', null);
+    }
+
+    public function commentsWithReplies()
+    {
+        return $this->comments()->with('replies.replies');
+    }
+    public function images()
+    {
+        return $this->morphOne(Image::class, 'imageSource');
     }
 }

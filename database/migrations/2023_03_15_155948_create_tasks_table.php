@@ -18,7 +18,6 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->boolean('is_completed')->default(0);
             $table->date('schedule_date');
-            $table->string('photo')->nullable();
             $table->timestamps();
         });
     }

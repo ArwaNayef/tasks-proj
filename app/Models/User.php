@@ -33,6 +33,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(Comment::class, 'user_id');
     }
+
+    public function images()
+    {
+        return $this->morphOne(Image::class, 'imageSource');
+    }
     /**
      * The attributes that should be hidden for serialization.
      *

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Image;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,22 +25,13 @@ class AuthController extends Controller
         $validator=Validator::make($request->all(),
             [
                 'name'=>'required',
-                'email'=>'required|email',
+                'email'=>'required|email|unique:users,email',
                 'password'=>'required|alpha_num|min:5',
 
             ]
         );
-
         if($validator->fails()) {
             return response()->json(["validation_errors" => $validator->errors()]);
-        }
-        $path="";
-        if($request->hasfile('photo'))
-        {
-            $image = $request->file('photo');
-            $imgname = time() + rand(1, 10000000) . '.' . $image->getClientOriginalExtension();
-            $path = "uploads/images/$imgname";
-            Storage::disk('public')->put($path, file_get_contents($image));
         }
 
 
@@ -47,10 +39,22 @@ class AuthController extends Controller
             "name"=>$request->name,
             "email"=>$request->email,
             "password"=>bcrypt($request->password),
-            "photo"=>$path,
         );
 
         $user=User::create($dataArray);
+
+        $path="";
+        if($request->hasfile('photo')) {
+            $image = $request->file('photo');
+            $imgname = time() + rand(1, 10000000) . '.' . $image->getClientOriginalExtension();
+            $path = "uploads/images/$imgname";
+            Storage::disk('public')->put($path, file_get_contents($image));
+        }
+        if($path!=""){
+            $picture = new Image();
+            $picture->image=$path;
+            $user->images()->save($picture);
+        }
 
         if(!is_null($user)) {
             return response()->json(["status" => $this->sucess_status, "success" => true, "data" => $user]);
